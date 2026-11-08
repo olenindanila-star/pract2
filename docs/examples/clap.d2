@@ -1,0 +1,11 @@
+# Граф зависимостей пакета clap
+direction: down
+
+"clap": {style.fill: "#fde68a"}
+"clap_builder": {style.fill: "#dbeafe"}
+"anstyle": {style.fill: "#dbeafe"}
+"clap_lex": {style.fill: "#dbeafe"}
+
+"clap" -> "clap_builder"
+"clap_builder" -> "anstyle"
+"clap_builder" -> "clap_lex"

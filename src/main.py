@@ -8,8 +8,10 @@ from console import setup_console
 from graph import GraphError, build_graph, count_edges, find_cycles
 from load_order import describe_load_order
 from local_repo import LocalRepoError, LocalRepository
+from render import RenderError, ascii_tree, save_visualization
 
-ERRORS = (ConfigError, RegistryError, LocalRepoError, GraphError)
+ERRORS = (ConfigError, RegistryError, LocalRepoError, GraphError,
+          RenderError)
 
 
 def make_source(config):
@@ -48,23 +50,48 @@ def describe_graph(config, graph):
     return lines
 
 
+def visualize(config, graph):
+    """Сохранить D2 и SVG и сформировать вывод визуализации.
+
+    :param config: объект Config
+    :param graph: словарь «пакет → список зависимостей»
+    :return: список строк для вывода
+    """
+    d2_path, svg_path, method = save_visualization(
+        graph, config.package, config.output)
+    lines = [f"Описание графа на языке D2: {d2_path}",
+             f"Изображение графа (SVG): {svg_path} — {method}"]
+    if config.ascii_tree:
+        lines += ["ASCII-дерево зависимостей:"]
+        lines += ascii_tree(graph, config.package)
+    return lines
+
+
+def run(config):
+    """Построить граф и вывести всё, что запросил пользователь.
+
+    :param config: объект Config
+    :return: список строк для вывода
+    """
+    graph = build_graph(config.package, make_source(config), config.exclude)
+    lines = describe_graph(config, graph)
+    if config.load_order:
+        lines += describe_load_order(graph)
+    return lines + visualize(config, graph)
+
+
 def main(argv=None):
-    """Разобрать параметры, построить граф зависимостей и вывести его.
+    """Разобрать параметры, построить и визуализировать граф зависимостей.
 
     :param argv: параметры командной строки (None — взять из sys.argv)
     :return: код завершения: 0 — успех, 1 — ошибка
     """
     setup_console()
     try:
-        config = parse_config(argv)
-        source = make_source(config)
-        graph = build_graph(config.package, source, config.exclude)
+        lines = run(parse_config(argv))
     except ERRORS as error:
         print(f"Ошибка: {error}", file=sys.stderr)
         return 1
-    lines = describe_graph(config, graph)
-    if config.load_order:
-        lines += describe_load_order(graph)
     for line in lines:
         print(line)
     return 0

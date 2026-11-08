@@ -1,0 +1,18 @@
+# Граф зависимостей пакета thiserror
+direction: down
+
+"thiserror": {style.fill: "#fde68a"}
+"thiserror-impl": {style.fill: "#dbeafe"}
+"proc-macro2": {style.fill: "#dbeafe"}
+"quote": {style.fill: "#dbeafe"}
+"syn": {style.fill: "#dbeafe"}
+"unicode-ident": {style.fill: "#dbeafe"}
+
+"thiserror" -> "thiserror-impl"
+"thiserror-impl" -> "proc-macro2"
+"thiserror-impl" -> "quote"
+"thiserror-impl" -> "syn"
+"proc-macro2" -> "unicode-ident"
+"quote" -> "proc-macro2"
+"syn" -> "proc-macro2"
+"syn" -> "unicode-ident"

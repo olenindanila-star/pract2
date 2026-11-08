@@ -1,0 +1,29 @@
+# Граф зависимостей пакета serde_json
+direction: down
+
+"serde_json": {style.fill: "#fde68a"}
+"itoa": {style.fill: "#dbeafe"}
+"memchr": {style.fill: "#dbeafe"}
+"serde": {style.fill: "#dbeafe"}
+"serde_core": {style.fill: "#dbeafe"}
+"zmij": {style.fill: "#dbeafe"}
+"serde_derive": {style.fill: "#dbeafe"}
+"proc-macro2": {style.fill: "#dbeafe"}
+"quote": {style.fill: "#dbeafe"}
+"syn": {style.fill: "#dbeafe"}
+"unicode-ident": {style.fill: "#dbeafe"}
+
+"serde_json" -> "itoa"
+"serde_json" -> "memchr"
+"serde_json" -> "serde"
+"serde_json" -> "serde_core"
+"serde_json" -> "zmij"
+"serde" -> "serde_core"
+"serde_core" -> "serde_derive"
+"serde_derive" -> "proc-macro2"
+"serde_derive" -> "quote"
+"serde_derive" -> "syn"
+"proc-macro2" -> "unicode-ident"
+"quote" -> "proc-macro2"
+"syn" -> "proc-macro2"
+"syn" -> "unicode-ident"
