@@ -80,6 +80,10 @@ class ParseConfigTest(unittest.TestCase):
         """Пустая подстрока фильтра — ошибка."""
         self.assert_error(["-p", "serde", "-f", ""], "--filter")
 
+    def test_bad_load_order(self):
+        """Режим порядка загрузки — только yes или no."""
+        self.assert_error(["-p", "serde", "-l", "1"], "--load-order")
+
     def test_unknown_option(self):
         """Неизвестный параметр командной строки."""
         self.assert_error(["-p", "serde", "--color"], "неверные параметры")
@@ -90,6 +94,7 @@ class ParseConfigTest(unittest.TestCase):
         self.assertIn("package = serde", lines)
         self.assertIn("filter = test", lines)
         self.assertIn("ascii-tree = no", lines)
+        self.assertIn("load-order = no", lines)
 
 
 if __name__ == "__main__":

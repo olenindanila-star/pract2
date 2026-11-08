@@ -6,6 +6,7 @@ from cargo_index import CargoRegistry, RegistryError
 from config import MODE_TEST, ConfigError, parse_config
 from console import setup_console
 from graph import GraphError, build_graph, count_edges, find_cycles
+from load_order import describe_load_order
 from local_repo import LocalRepoError, LocalRepository
 
 ERRORS = (ConfigError, RegistryError, LocalRepoError, GraphError)
@@ -61,7 +62,10 @@ def main(argv=None):
     except ERRORS as error:
         print(f"Ошибка: {error}", file=sys.stderr)
         return 1
-    for line in describe_graph(config, graph):
+    lines = describe_graph(config, graph)
+    if config.load_order:
+        lines += describe_load_order(graph)
+    for line in lines:
         print(line)
     return 0
 

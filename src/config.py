@@ -34,6 +34,7 @@ class Config:
     :ivar output: имя файла с изображением графа (SVG)
     :ivar ascii_tree: выводить ли зависимости в виде ASCII-дерева
     :ivar exclude: подстрока для фильтрации пакетов (или None)
+    :ivar load_order: выводить ли порядок загрузки зависимостей
     """
 
     package: str
@@ -42,6 +43,7 @@ class Config:
     output: str
     ascii_tree: bool
     exclude: str = None
+    load_order: bool = False
 
 
 class RussianArgumentParser(argparse.ArgumentParser):
@@ -70,6 +72,8 @@ def build_parser():
                         help="вывод ASCII-дерева: yes или no")
     parser.add_argument("-f", "--filter", dest="exclude",
                         help="исключить пакеты, содержащие подстроку")
+    parser.add_argument("-l", "--load-order", default="no",
+                        help="вывод порядка загрузки: yes или no")
     return parser
 
 
@@ -153,9 +157,10 @@ def parse_config(argv=None):
     validate_output(args.output)
     validate_yes_no(args.ascii_tree, "--ascii-tree")
     validate_filter(args.exclude)
+    validate_yes_no(args.load_order, "--load-order")
     return Config(package=args.package, repo=args.repo, mode=args.mode,
                   output=args.output, ascii_tree=args.ascii_tree == YES,
-                  exclude=args.exclude)
+                  exclude=args.exclude, load_order=args.load_order == YES)
 
 
 def format_config(config):
@@ -171,5 +176,6 @@ def format_config(config):
         ("output", config.output),
         ("ascii-tree", YES if config.ascii_tree else "no"),
         ("filter", config.exclude),
+        ("load-order", YES if config.load_order else "no"),
     ]
     return [f"{key} = {value}" for key, value in pairs]

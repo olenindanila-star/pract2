@@ -50,6 +50,14 @@ class MainTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("Ошибка: --output", err)
 
+    def test_load_order(self):
+        """С --load-order yes выводится порядок загрузки."""
+        code, out, _ = run_main(["-p", "A", "-m", "test", "-l", "yes",
+                                 "-r", example("simple.txt")])
+        self.assertEqual(code, 0)
+        self.assertIn("Порядок загрузки", out)
+        self.assertIn("  4. A", out)
+
     def test_missing_test_package(self):
         """Пакета нет в тестовом репозитории — код 1."""
         code, _, err = run_main(["-p", "Z", "-m", "test",
