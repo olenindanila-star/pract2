@@ -6,7 +6,7 @@ import unittest
 import urllib.error
 from unittest import mock
 
-import helpers  # noqa: F401  (добавляет src в sys.path)
+import helpers
 
 from cargo_index import (CargoRegistry, Dependency, RegistryError,
                          direct_dependencies, fetch_index, index_path,
