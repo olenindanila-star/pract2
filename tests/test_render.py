@@ -3,10 +3,10 @@
 import os
 import tempfile
 import unittest
-import xml.etree.ElementTree as ElementTree
 from unittest import mock
+from xml.dom import minidom
 
-import helpers  # noqa: F401  (добавляет src в sys.path)
+import helpers
 
 from render import (RenderError, ascii_tree, builtin_svg, compute_levels,
                     run_d2, save_visualization, to_d2)
@@ -41,9 +41,9 @@ class SvgTest(unittest.TestCase):
     def test_valid_svg(self):
         """Получается корректный XML с подписями всех пакетов."""
         for graph in (DIAMOND, CYCLE, {"A": ["A"]}):
-            root = ElementTree.fromstring(builtin_svg(graph, "A"))
-            texts = {node.text for node in root.iter()
-                     if node.tag.endswith("text")}
+            svg = minidom.parseString(builtin_svg(graph, "A"))
+            texts = {node.firstChild.data
+                     for node in svg.getElementsByTagName("text")}
             self.assertEqual(texts, set(graph))
 
 
